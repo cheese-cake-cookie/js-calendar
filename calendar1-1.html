@@ -1,0 +1,214 @@
+<style type="text/css">
+    .calendar {
+        position: absolute;
+        width: 300px;
+        background-color: #e6e7e8;
+        border-radius: 6px;
+        z-index: 9;
+    }
+    .calendar > .since > a {
+        cursor: pointer;
+    }
+    .calendar > .since > a.prev::before {
+        content: '\003c';
+    }
+    .calendar > .since > a.next::after {
+        content: '\003e';
+    }
+    .calendar > .dates,
+    .calendar > .days {
+        width: 250px;
+        margin: 20px auto;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #fff;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .calendar > .dates > li,
+    .calendar > .days > li {
+        width: 30px;
+        height: 30px;
+        float: left;
+        line-height: 30px;;
+        text-align: center;
+        list-style: none;
+        font-size: 11px;
+        cursor: pointer;
+    }
+    .calendar > .dates > li.today {
+        background-color: #ffb2ad;
+        border-radius: 30px;
+    }
+    .calendar > .days > li.sat,
+    .calendar > .dates > li.sat {
+        color: #1565c0;
+    }
+    .calendar > .days > li.sun,
+    .calendar > .dates > li.sun {
+        color: #d50000;
+    }
+</style>
+<div id="calendar" class="calendar"></div>
+<script type="text/javascript">
+class Calendar {
+    constructor (year, month, date) {
+        let currentDate = new Date(),
+            selectedYear = currentDate.getFullYear(),
+            selectedMonth = currentDate.getMonth(),
+            selectedDate = currentDate.getDate();
+
+        this.year = year ? year : selectedYear;
+        this.month = month ? month : selectedMonth + 1;
+        this.date = date ? date : selectedDate;
+        this.lastDate = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        this.fragment = document.createDocumentFragment();   
+    }
+
+    draw (el) {
+        this._drawSince(el);
+        this._drawDate(el);
+    }
+
+    _drawSince (el) {
+        let since = document.createElement('ul'),
+            prev = document.createElement('a'),
+            next = document.createElement('a');
+
+        since.className = 'since';
+        
+        prev.className = 'prev';
+        prev.innerText = `${ +this.month } 월`;
+
+        next.className = 'next';
+        next.innerText = `${ +this.month + 2 } 월`;
+
+        since.appendChild(prev);
+    
+        this._drawYear(since);
+        this._drawMonth(since);
+
+        since.appendChild(next);
+
+        el.appendChild(since);
+    }
+
+    _drawYear (el) {
+        let year = document.createElement('h1');
+        
+        year.className = 'year';
+        year.innerText = `${ this.year }년`;
+        
+        el.appendChild(year);
+    }
+
+    _drawMonth (el) {
+        let month = document.createElement('h2');
+        
+        month.className = 'month';
+        month.innerText = `${ +this.month + 1 }월`;
+
+        el.appendChild(month);
+    }
+
+    _drawDays (el) {
+        let daysOfWeek = document.createElement('ul');
+        
+        daysOfWeek.className = 'days';
+
+        for (let i = 0; i < 7; i += 1) {
+            var days = document.createElement('li');
+
+            switch (i) {
+            case 0:
+                days.className = 'sun';
+                days.innerText = '일';
+                break;
+            case 1:
+                days.innerText = '월';
+                break;
+            case 2:
+                days.innerText = '화';
+                break;
+            case 3:
+                days.innerText = '수';
+                break;
+            case 4:
+                days.innerText = '목';
+                break;
+            case 5:
+                days.innerText = '금';
+                break;
+            case 6:
+                days.className = 'sat';
+                days.innerText = '토';
+                break;
+            }  
+            daysOfWeek.appendChild(days);
+        }
+        
+        this.fragment.appendChild(daysOfWeek);
+        el.appendChild(this.fragment);
+    }
+
+    _drawDate (el) {
+        let days = document.createElement('ul');
+
+        this._drawDays(el);
+
+        days.className = 'dates';
+
+        if (new Date(this.year, this.month, 1).getDay() !== 0) {
+            for (let i = 0; i < new Date(this.year, this.month, 1).getDay(); i += 1) {
+                var date = document.createElement('li');
+
+                date.className = 'date';
+                this.fragment.appendChild(date);
+			    days.appendChild(this.fragment);
+            }
+
+        }
+        
+        for (let i = 1; i <= this.lastDate; i += 1) {
+            let dayOfWeek = new Date(this.year, this.month, i).getDay(),
+                date = document.createElement('li'),
+                classes = ['date'];
+
+            if (i == this.date) classes.push('today');
+                
+            switch (dayOfWeek) {
+            case 0:
+                classes.push('sun');
+                break;
+            case 1:
+                // No break;
+            case 2:
+                // No break;
+            case 3:
+                // No break;
+            case 4:
+                // No break;
+            case 5:
+                break;
+            case 6:
+                classes.push('sat');
+                break;
+            }
+
+            date.className = classes.join(' ');
+            date.innerHTML = i + '일';
+            this.fragment.appendChild(date);
+            days.appendChild(this.fragment);
+        }
+
+        el.appendChild(days);
+    }
+}
+
+
+var calendar = new Calendar('2020', '5', '1');
+var calendarEl = document.getElementById('calendar');
+
+calendar.draw(calendarEl);
+// calendar1.show();
+</script>
