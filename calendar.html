@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Calendar</title>
+	<style type="text/css">
+		.calendar > .day {
+			overflow: hidden;
+		}
+		.calendar > .day > li {
+			width: 30px;
+			height: 30px;
+			float: left;
+			line-height: 30px;;
+			text-align: center;
+			list-style: none;
+			font-size: 11px;
+		}
+		.calendar > .weeks {
+			width: 210px;
+		}
+		.calendar > .weeks > li {
+			width: 30px;
+			height: 30px;
+			float: left;
+			line-height: 30px;;
+			text-align: center;
+			list-style: none;
+			font-size: 11px;
+		}
+	</style>
+</head>
+<body>
+<div id="calendar" class="calendar">
+	<h1 id="year"></h1>
+	<h1 id="month"></h1>
+	<ul class="day">
+		<li>일</li>
+		<li>월</li>
+		<li>화</li>
+		<li>수</li>
+		<li>목</li>
+		<li>금</li>
+		<li>토</li>
+	</ul>
+	<ul id="weeks" class="weeks"></ul>
+</div>
+<script type="text/javascript">
+(function () {
+let calendar = document.getElementById('calendar'),
+	year = document.getElementById('year'),
+	month = document.getElementById('month'),
+	weeks = document.getElementById('weeks'),
+	// currentDate = new Date(),
+	currentDate = new Date('2020-02-11'), // @FIXME 테스트
+	selectedYear = currentDate.getFullYear(),
+	selectedMonth = currentDate.getMonth(),
+	lastDateOfSelectedMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate(),
+	fragment = document.createDocumentFragment();
+	year.innerText = selectedYear + '년';
+	month.innerText = (selectedMonth + 1)  + '월';
+    
+	if (new Date(selectedYear, selectedMonth, 1).getDay() !== 0) {
+		for (let i = 0; i < new Date(selectedYear, selectedMonth, 1).getDay(); i += 1) {
+			fragment.appendChild(document.createElement('li'));
+			weeks.appendChild(fragment);
+		}
+	}
+	for (let i = 1; i <= lastDateOfSelectedMonth; i += 1) {
+		let dayOfWeek = new Date(selectedYear, selectedMonth, i).getDay(),
+			date = document.createElement('li');
+		switch (dayOfWeek) {
+		case 0:
+			console.log(i + '일은 일요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 1:
+			console.log(i + '일은 월요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 2:
+			console.log(i + '일은 화요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 3:
+			console.log(i + '일은 수요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 4:
+			console.log(i + '일은 목요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 5:
+			console.log(i + '일은 금요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		case 6:
+			console.log(i + '일은 토요일');
+			date.innerHTML = i + '일';
+			fragment.appendChild(date);
+			break;
+		}
+		weeks.appendChild(fragment);
+	}
+}) ();
+</script>
+</body>
+</html>
